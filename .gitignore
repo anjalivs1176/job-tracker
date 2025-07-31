@@ -4,12 +4,10 @@ node_modules/
 # Environment variables
 .env
 
-# Build outputs
-
+# Build outputs (excluding dist/, needed for frontend deployment)
 build/
-.vite
+.vite/
 
-# IDE specific
+# System/IDE
 .vscode/
 .DS_Store
-.vite
