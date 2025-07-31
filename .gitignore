@@ -1,13 +1,12 @@
-# Node modules
+# node modules
 node_modules/
+backend/node_modules/
+frontend/node_modules/
 
-# Environment variables
+# environment files
 .env
+frontend/.env
+backend/.env
 
-# Build outputs (excluding dist/, needed for frontend deployment)
-build/
-.vite/
-
-# System/IDE
-.vscode/
-.DS_Store
+# build folders
+frontend/dist/
