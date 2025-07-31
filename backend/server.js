@@ -30,7 +30,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// Routes
+// Routes to navigate
 app.use('/api/test', testRoutes);
 app.use('/api/jobs', JobRoutes);
 app.use('/api/auth', authRoutes);
