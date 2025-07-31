@@ -1,3 +1,15 @@
- node_modules
+# Node modules
+node_modules/
+
+# Environment variables
 .env
-/frontend/node_modules
+
+# Build outputs
+dist/
+build/
+.vite
+
+# IDE specific
+.vscode/
+.DS_Store
+.vite

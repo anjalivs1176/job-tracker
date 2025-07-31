@@ -10,6 +10,9 @@ const JobCard = ({ job , onDelete}) => {
       <p><strong>Status:</strong> {job.status}</p>
       <p><strong>Applied On:</strong> {new Date(job.applicationDate).toLocaleDateString()}</p>
 
+
+      
+
       <div style={styles.actions}>
         <Link to={`/edit/${job._id}`} style={styles.edit}>Edit</Link>
       </div>

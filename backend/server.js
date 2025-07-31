@@ -1,9 +1,11 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import cors from 'cors'; // ✅ ADD THIS
+import cors from 'cors';
 import connectDB from './config/db.js';
 import testRoutes from './routes/testRoutes.js';
 import JobRoutes from './routes/JobRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+
 
 dotenv.config();
 connectDB();
@@ -16,6 +18,8 @@ app.use(express.json());
 // Routes
 app.use('/api/test', testRoutes);
 app.use('/api/jobs', JobRoutes);
+app.use('/api/auth', authRoutes);
+
 app.use(cors());
 
 const PORT = process.env.PORT || 5000;
