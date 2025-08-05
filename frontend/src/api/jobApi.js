@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`, // ✅ use environment variable
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`, // ✅ use environment variable
 });
 
 // Exported API functions
