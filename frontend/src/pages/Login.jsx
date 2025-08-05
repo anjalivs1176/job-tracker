@@ -13,7 +13,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/auth/login`,
+        { email, password },
+        { withCredentials: true }
+      );
+
       login(res.data); // sets user in context & localStorage
       navigate('/');
     } catch (err) {
