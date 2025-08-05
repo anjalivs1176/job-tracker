@@ -12,7 +12,7 @@ const JobList = () => {
 
   const fetchJobs = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/jobs", {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs`, {
         params: { search: searchTerm, sortBy, status: statusFilter }
       });
       setJobs(response.data);
@@ -32,7 +32,7 @@ const JobList = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/jobs/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`);
       setJobs((prevJobs) => prevJobs.filter((job) => job._id !== id));
     } catch (error) {
       console.error("Error deleting job:", error);

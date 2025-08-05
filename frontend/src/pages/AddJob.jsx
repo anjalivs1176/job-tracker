@@ -31,7 +31,7 @@ const AddJob = () => {
     };
 
     try {
-      await axios.post('http://localhost:5000/api/jobs', job);
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/jobs`, job);
       navigate('/');
     } catch (error) {
       console.error('🔥 Backend Error:', error.response?.data || error.message);

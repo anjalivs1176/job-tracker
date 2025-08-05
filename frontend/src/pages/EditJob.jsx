@@ -20,7 +20,7 @@ const EditJob = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/jobs/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`);
         const data = response.data;
 
         setJob({
@@ -57,7 +57,7 @@ const EditJob = () => {
         salary: job.salary ? parseInt(job.salary) : undefined,
       };
 
-      await axios.put(`http://localhost:5000/api/jobs/${id}`, updatedJob);
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`, updatedJob);
       navigate('/');
     } catch (err) {
       console.error(err);
