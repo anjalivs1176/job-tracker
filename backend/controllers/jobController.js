@@ -5,12 +5,12 @@ import Job from '../models/JobModel.js';
 // @access  Public
 const getAllJobs = async (req, res) => {
   try {
-    const { search, sortBy, status } = req.query;
+    let { search = '', sortBy = '', status = 'all' } = req.query;
 
     const query = { user: req.user.id };
 
     // 🔍 Search by title, company, or location
-    if (search) {
+    if (search.trim()) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
         { company: { $regex: search, $options: 'i' } },
@@ -18,25 +18,30 @@ const getAllJobs = async (req, res) => {
       ];
     }
 
-    // 🎯 Filter by status
-    if (status) {
+    // 🎯 Filter by status (only if not 'all' or empty)
+    if (status && status !== 'all') {
       query.status = status;
     }
 
-    // 🔃 Sort by salary or date
+    // 🔃 Sort by salary or applicationDate
     let sortOption = {};
     if (sortBy === 'salary') {
       sortOption.salary = -1;
     } else if (sortBy === 'applicationDate') {
       sortOption.applicationDate = -1;
+    } else {
+      // Default sort: most recent first
+      sortOption.createdAt = -1;
     }
 
     const jobs = await Job.find(query).sort(sortOption);
     res.status(200).json(jobs);
   } catch (error) {
+    console.error("🔥 Error in getAllJobs:", error);
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
+
 
 // @desc    Get single job by ID
 // @route   GET /api/jobs/:id
