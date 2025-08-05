@@ -19,7 +19,7 @@ const Register = () => {
         email,
         password,
       });
-      login(res.data); // saves to context/localStorage
+      login(res.data.token); // saves to context/localStorage
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');

@@ -19,7 +19,7 @@ const Login = () => {
         { withCredentials: true }
       );
 
-      login(res.data); // sets user in context & localStorage
+      login(res.data.token); // sets user in context & localStorage
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

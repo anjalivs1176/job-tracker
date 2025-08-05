@@ -7,7 +7,7 @@ const getAllJobs = async (req, res) => {
   try {
     const { search, sortBy, status } = req.query;
 
-    const query = {};
+    const query = { user: req.user.id };
 
     // 🔍 Search by title, company, or location
     if (search) {
@@ -47,11 +47,19 @@ const getJobById = async (req, res) => {
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
+
+    // ✅ Check if the job belongs to the current user
+    if (job.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Unauthorized access' });
+    }
+
     res.status(200).json(job);
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
+
+
 
 // @desc    Create a new job
 // @route   POST /api/jobs
@@ -70,7 +78,8 @@ const createJob = async (req, res) => {
       location,
       salary,
       status,
-      applicationDate
+      applicationDate,
+      user: req.user.id
     });
 
     const savedJob = await newJob.save();
@@ -92,6 +101,11 @@ const updateJob = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
+    // ✅ Check if the job belongs to the current user
+    if (job.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Unauthorized access' });
+    }
+
     job.title = title || job.title;
     job.company = company || job.company;
     job.location = location || job.location;
@@ -106,6 +120,8 @@ const updateJob = async (req, res) => {
   }
 };
 
+
+
 // @desc    Delete job by ID
 // @route   DELETE /api/jobs/:id
 // @access  Public
@@ -116,12 +132,19 @@ const deleteJob = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
+    // ✅ Check if the job belongs to the current user
+    if (job.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Unauthorized access' });
+    }
+
     await job.deleteOne();
     res.status(200).json({ message: 'Job deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
+
+
 
 // ✅ Export all functions cleanly
 export {

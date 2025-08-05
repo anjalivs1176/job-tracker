@@ -10,34 +10,53 @@ const JobList = () => {
   const [sortBy, setSortBy] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  const fetchJobs = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs`, {
-        params: { search: searchTerm, sortBy, status: statusFilter }
-      });
-      setJobs(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-      setLoading(false);
-    }
-  };
+const fetchJobs = async () => {
+  try {
+    const token = localStorage.getItem("token"); // Make sure this exists!
+    
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        search: searchTerm,
+        sortBy,
+        status: statusFilter,
+      },
+    });
+
+    setJobs(response.data);
+    setLoading(false);
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchJobs();
   }, [searchTerm, sortBy, statusFilter]);
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this job?");
-    if (!confirmDelete) return;
+ const handleDelete = async (id) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this job?");
+  if (!confirmDelete) return;
 
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`);
-      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== id));
-    } catch (error) {
-      console.error("Error deleting job:", error);
-    }
-  };
+  try {
+    const token = localStorage.getItem("token");
+
+    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    setJobs((prevJobs) => prevJobs.filter((job) => job._id !== id));
+  } catch (error) {
+    console.error("Error deleting job:", error.response?.data || error.message);
+  }
+};
+
 
   return (
     <div className="p-4 overflow-x-hidden">

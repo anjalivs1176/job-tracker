@@ -20,7 +20,14 @@ const EditJob = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`);
+        const token = localStorage.getItem('token'); // ✅ manually get token
+
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ send token in header
+          },
+        });
+
         const data = response.data;
 
         setJob({
@@ -29,7 +36,7 @@ const EditJob = () => {
           location: data.location || '',
           salary: data.salary ? String(data.salary) : '',
           status: data.status || 'applied',
-          applicationDate: data.applicationDate ? data.applicationDate.split('T')[0] : '', // 👈 fix date
+          applicationDate: data.applicationDate ? data.applicationDate.split('T')[0] : '',
         });
       } catch (err) {
         console.error(err);
@@ -52,12 +59,19 @@ const EditJob = () => {
     e.preventDefault();
 
     try {
+      const token = localStorage.getItem('token'); // ✅ manually get token
+
       const updatedJob = {
         ...job,
         salary: job.salary ? parseInt(job.salary) : undefined,
       };
 
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`, updatedJob);
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/jobs/${id}`, updatedJob, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ send token in header
+        },
+      });
+
       navigate('/');
     } catch (err) {
       console.error(err);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { createJob } from '../api/jobApi';
 
 const AddJob = () => {
   const [title, setTitle] = useState('');
@@ -15,7 +16,6 @@ const AddJob = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!title || !company || !location || !applicationDate) {
       setError('All required fields must be filled');
       return;
@@ -31,12 +31,13 @@ const AddJob = () => {
     };
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/jobs`, job);
+      await createJob(job);
       navigate('/');
     } catch (error) {
       console.error('🔥 Backend Error:', error.response?.data || error.message);
       setError(error.response?.data?.message || 'Something went wrong');
     }
+
   };
 
   return (

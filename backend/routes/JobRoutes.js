@@ -1,6 +1,8 @@
 import express from 'express';
 const router = express.Router();
 
+import protect from '../middleware/authMiddleware.js';
+
 import {
   createJob,
   getAllJobs,
@@ -11,13 +13,13 @@ import {
 
 // Base routes: /api/jobs
 router.route('/')
-  .post(createJob)
-  .get(getAllJobs);
+  .post(protect, createJob)
+  .get(protect, getAllJobs);
 
 // Routes with ID: /api/jobs/:id
 router.route('/:id')
-  .get(getJobById)
-  .put(updateJob)
-  .delete(deleteJob);
+  .get(protect, getJobById)
+  .put(protect, updateJob)
+  .delete(protect, deleteJob);
 
 export default router;
