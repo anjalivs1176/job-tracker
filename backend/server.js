@@ -14,7 +14,7 @@ const app = express();
 // ✅ CORS setup for both localhost and Vercel
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://job-tracker-alpha-three.vercel.app'
+  'https://anjali-job-tracker.netlify.app',
 ];
 
 app.use(cors({
