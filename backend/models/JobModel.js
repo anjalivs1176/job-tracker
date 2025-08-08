@@ -29,6 +29,19 @@ const jobSchema = new mongoose.Schema({
   applicationDate: {
     type: Date,
     required: true,
+  },
+  tags: {
+    type: [String], // e.g., ['remote', 'urgent']
+    default: []
+  },
+  followUpDate: {
+    type: Date // for reminders
+  },
+  notes: {
+    type: String // optional extra details
+  },
+  resume: {
+    type: String // file path or cloud URL
   }
 }, { timestamps: true });
 

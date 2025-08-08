@@ -2,6 +2,10 @@ import express from 'express';
 const router = express.Router();
 
 import protect from '../middleware/authMiddleware.js';
+import { updateJobStatus } from '../controllers/jobController.js';
+
+
+
 
 import {
   createJob,
@@ -15,6 +19,8 @@ import {
 router.route('/')
   .post(protect, createJob)
   .get(protect, getAllJobs);
+
+router.patch('/:id/status', protect, updateJobStatus);
 
 // Routes with ID: /api/jobs/:id
 router.route('/:id')

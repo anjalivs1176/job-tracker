@@ -3,9 +3,15 @@ import Job from '../models/JobModel.js';
 // @desc    Get all jobs
 // @route   GET /api/jobs
 // @access  Public
+// @desc    Get all jobs (with pagination)
+// @route   GET /api/jobs
+// @access  Private
 const getAllJobs = async (req, res) => {
   try {
-    let { search = '', sortBy = '', status = 'all' } = req.query;
+    let { search = '', sortBy = '', status = 'all', page = 1, limit = 6 } = req.query;
+
+    page = Number(page);
+    limit = Number(limit);
 
     const query = { user: req.user.id };
 
@@ -18,24 +24,36 @@ const getAllJobs = async (req, res) => {
       ];
     }
 
-    // 🎯 Filter by status (only if not 'all' or empty)
+    // 🎯 Filter by status
     if (status && status !== 'all') {
       query.status = status;
     }
 
-    // 🔃 Sort by salary or applicationDate
+    // 🔃 Sort
     let sortOption = {};
     if (sortBy === 'salary') {
       sortOption.salary = -1;
     } else if (sortBy === 'applicationDate') {
       sortOption.applicationDate = -1;
     } else {
-      // Default sort: most recent first
       sortOption.createdAt = -1;
     }
 
-    const jobs = await Job.find(query).sort(sortOption);
-    res.status(200).json(jobs);
+    // 📌 Pagination logic
+    const skip = (page - 1) * limit;
+    const totalJobs = await Job.countDocuments(query);
+
+    const jobs = await Job.find(query)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      jobs,
+      totalJobs,
+      totalPages: Math.ceil(totalJobs / limit),
+      currentPage: page
+    });
   } catch (error) {
     console.error("🔥 Error in getAllJobs:", error);
     res.status(500).json({ message: 'Server Error', error: error.message });
@@ -53,7 +71,6 @@ const getJobById = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
-    // ✅ Check if the job belongs to the current user
     if (job.user.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Unauthorized access' });
     }
@@ -63,8 +80,6 @@ const getJobById = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
-
-
 
 // @desc    Create a new job
 // @route   POST /api/jobs
@@ -106,7 +121,6 @@ const updateJob = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
-    // ✅ Check if the job belongs to the current user
     if (job.user.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Unauthorized access' });
     }
@@ -125,7 +139,33 @@ const updateJob = async (req, res) => {
   }
 };
 
+// @desc    Update only job status
+// @route   PATCH /api/jobs/:id/status
+// @access  Public
+const updateJobStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const validStatuses = ['applied', 'interview', 'offer', 'rejected'];
 
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    const job = await Job.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { status },
+      { new: true }
+    );
+
+    if (!job) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
+    res.json(job);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+};
 
 // @desc    Delete job by ID
 // @route   DELETE /api/jobs/:id
@@ -137,7 +177,6 @@ const deleteJob = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
-    // ✅ Check if the job belongs to the current user
     if (job.user.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Unauthorized access' });
     }
@@ -149,13 +188,11 @@ const deleteJob = async (req, res) => {
   }
 };
 
-
-
-// ✅ Export all functions cleanly
 export {
   getAllJobs,
   getJobById,
   createJob,
   updateJob,
+  updateJobStatus,
   deleteJob
 };
