@@ -45,10 +45,12 @@ job-tracker/
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the repository
+1️⃣ Clone the repository
 
 git clone https://github.com/your-username/job-tracker.git
 cd job-tracker
+
+
 2️⃣ Backend Setup
 
 cd backend
@@ -61,9 +63,9 @@ JWT_SECRET=your_jwt_secret
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_app_password
 FRONTEND_URL=http://localhost:5173
-Start backend:
+Start backend:npm start
 
-npm start
+
 3️⃣ Frontend Setup
 
 cd ../frontend
